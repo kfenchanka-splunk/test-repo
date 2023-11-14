@@ -205,6 +205,7 @@
                       "Microsoft.Resources/subscriptions/resourcegroups/read",
                       "Microsoft.Storage/storageAccounts/blobServices/containers/read",
                       "Microsoft.Storage/storageAccounts/read",
+                      "Microsoft.Storage/storageAccounts/managementPolicies/read",
                       "Microsoft.Web/sites/read",
                       "Microsoft.Web/serverfarms/read",
                       "Microsoft.Web/sites/sourcecontrols/read"
@@ -249,6 +250,56 @@
               }
             },
             {
+              "type": "Microsoft.Storage/storageAccounts/managementPolicies",
+              "apiVersion": "2021-04-01",
+              "name": "[concat(variables('logsStorageAccountName'), '/default')]",
+              "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('logsStorageAccountName'))]"
+              ],
+              "properties": {
+                "policy": {
+                  "rules": [
+                    {
+                      "name": "DeleteLogsAfterSixtyDays",
+                      "enabled": true,
+                      "type": "Lifecycle",
+                      "definition": {
+                        "actions": {
+                          "baseBlob": {
+                            "delete": {
+                              "daysAfterModificationGreaterThan": 60
+                            }
+                          }
+                        },
+                        "filters": {
+                          "blobTypes": [ "appendBlob" ],
+                          "prefixMatch": [ "insights-logs-" ]
+                        }
+                      }
+                    },
+                    {
+                      "name": "DeleteMetricsAfterSixtyDays",
+                      "enabled": true,
+                      "type": "Lifecycle",
+                      "definition": {
+                        "actions": {
+                          "baseBlob": {
+                            "delete": {
+                              "daysAfterModificationGreaterThan": 60
+                            }
+                          }
+                        },
+                        "filters": {
+                          "blobTypes": [ "appendBlob" ],
+                          "prefixMatch": [ "insights-metrics-" ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            {
               "type": "Microsoft.Storage/storageAccounts",
               "tags": "[union(parameters('allResourceTags'), createObject('SplunkDMDeletionOrder', 4))]",
               "apiVersion": "2021-04-01",
@@ -265,6 +316,56 @@
               }
             },
             {
+              "type": "Microsoft.Storage/storageAccounts/managementPolicies",
+              "apiVersion": "2021-04-01",
+              "name": "[concat(variables('backupStorageAccountName'), '/default')]",
+              "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('backupStorageAccountName'))]"
+              ],
+              "properties": {
+                "policy": {
+                  "rules": [
+                    {
+                      "name": "DeleteLogsAfterSixtyDays",
+                      "enabled": true,
+                      "type": "Lifecycle",
+                      "definition": {
+                        "actions": {
+                          "baseBlob": {
+                            "delete": {
+                              "daysAfterModificationGreaterThan": 60
+                            }
+                          }
+                        },
+                        "filters": {
+                          "blobTypes": [ "appendBlob" ],
+                          "prefixMatch": [ "insights-logs-" ]
+                        }
+                      }
+                    },
+                    {
+                      "name": "DeleteMetricsAfterSixtyDays",
+                      "enabled": true,
+                      "type": "Lifecycle",
+                      "definition": {
+                        "actions": {
+                          "baseBlob": {
+                            "delete": {
+                              "daysAfterModificationGreaterThan": 60
+                            }
+                          }
+                        },
+                        "filters": {
+                          "blobTypes": [ "appendBlob" ],
+                          "prefixMatch": [ "insights-metrics-" ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            {
               "type": "Microsoft.Storage/storageAccounts/providers/diagnosticSettings",
               "tags": "[parameters('allResourceTags')]",
               "apiVersion": "2017-05-01-preview",
@@ -278,10 +379,7 @@
                 "metrics": [
                   {
                     "category": "AllMetrics",
-                    "enabled": true,
-                    "retentionPolicy": {
-                      "enabled": true
-                    }
+                    "enabled": true
                   }
                 ]
               }
@@ -304,6 +402,56 @@
               }
             },
             {
+              "type": "Microsoft.Storage/storageAccounts/managementPolicies",
+              "apiVersion": "2021-04-01",
+              "name": "[concat(variables('jobsStorageAccountName'), '/default')]",
+              "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('jobsStorageAccountName'))]"
+              ],
+              "properties": {
+                "policy": {
+                  "rules": [
+                    {
+                      "name": "DeleteLogsAfterSixtyDays",
+                      "enabled": true,
+                      "type": "Lifecycle",
+                      "definition": {
+                        "actions": {
+                          "baseBlob": {
+                            "delete": {
+                              "daysAfterModificationGreaterThan": 60
+                            }
+                          }
+                        },
+                        "filters": {
+                          "blobTypes": [ "appendBlob" ],
+                          "prefixMatch": [ "insights-logs-" ]
+                        }
+                      }
+                    },
+                    {
+                      "name": "DeleteMetricsAfterSixtyDays",
+                      "enabled": true,
+                      "type": "Lifecycle",
+                      "definition": {
+                        "actions": {
+                          "baseBlob": {
+                            "delete": {
+                              "daysAfterModificationGreaterThan": 60
+                            }
+                          }
+                        },
+                        "filters": {
+                          "blobTypes": [ "appendBlob" ],
+                          "prefixMatch": [ "insights-metrics-" ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            {
               "type": "Microsoft.Storage/storageAccounts/providers/diagnosticSettings",
               "tags": "[parameters('allResourceTags')]",
               "apiVersion": "2017-05-01-preview",
@@ -317,10 +465,7 @@
                 "metrics": [
                   {
                     "category": "AllMetrics",
-                    "enabled": true,
-                    "retentionPolicy": {
-                      "enabled": true
-                    }
+                    "enabled": true
                   }
                 ]
               }
@@ -408,10 +553,7 @@
                 "metrics": [
                   {
                     "category": "AllMetrics",
-                    "enabled": true,
-                    "retentionPolicy": {
-                      "enabled": true
-                    }
+                    "enabled": true
                   }
                 ]
               }
@@ -446,10 +588,7 @@
                 "metrics": [
                   {
                     "category": "AllMetrics",
-                    "enabled": true,
-                    "retentionPolicy": {
-                      "enabled": true
-                    }
+                    "enabled": true
                   }
                 ]
               }
@@ -476,7 +615,7 @@
                       "*"
                     ]
                   },
-                  "linuxFxVersion": "node|16",
+                  "linuxFxVersion": "node|18",
                   "appSettings": [
                     {
                       "name": "FUNCTIONS_EXTENSION_VERSION",
@@ -565,19 +704,13 @@
                 "logs": [
                   {
                     "category": "FunctionAppLogs",
-                    "enabled": true,
-                    "retentionPolicy": {
-                      "enabled": true
-                    }
+                    "enabled": true
                   }
                 ],
                 "metrics": [
                   {
                     "category": "AllMetrics",
-                    "enabled": true,
-                    "retentionPolicy": {
-                      "enabled": true
-                    }
+                    "enabled": true
                   }
                 ]
               }
